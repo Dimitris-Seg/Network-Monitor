@@ -22,64 +22,44 @@
  #include <assert.h>
  //
  
- void* safe_malloc(size_t size)
- {
-     void* allocated = malloc(size);
-     if (allocated == NULL)
-     {
-         ERROR("Malloc: Unable to allocate memory.");
-         exit(EXIT_FAILURE);
-     }
-     return allocated;
- }
- 
- void* deepCopy(const void* src, size_t size) {
-     // Allocate memory for the new object
-     void* copy = safe_malloc(size);
- 
-     // Copy the contents of the original object
-     memcpy(copy, src, size);
- 
-     return copy;
- }
- 
- void safe_free(void* mem)
- {
-     if(!mem){
-         ERROR("Free: Invalid memory pointer 'NULL'");
-         exit(EXIT_FAILURE);
-     }
- 
-     free(mem);
- }
- 
- size_t hash_int(int value, size_t length){
-     return value%length;
- }
- 
- size_t hash_string(string value, size_t length){
-     assert(value);
- 
-     size_t hash = 0;
-     while(*value){
-         hash+=*value;
-         ++value;
-     }
-     return hash%length;
- }
- 
- int min(int a, int b){
-     return (a<b?a:b);
- }
- 
- int max(int a, int b){
-     return (a>b?a:b);
- }
- 
- int myfloor(float val){
-     return (int)val;
- }
- 
- int myceil(float val){
-     return val+(val!=(int)val);
- }
+void* safe_malloc(size_t size)
+{
+    void* allocated = malloc(size);
+    if (allocated == NULL)
+    {
+        ERROR("Malloc: Unable to allocate memory.");
+        exit(EXIT_FAILURE);
+    }
+    return allocated;
+}
+
+void* deepCopy(const void* src, size_t size) {
+    // Allocate memory for the new object
+    void* copy = safe_malloc(size);
+
+    // Copy the contents of the original object
+    memcpy(copy, src, size);
+
+    return copy;
+}
+
+void safe_free(void* mem)
+{
+    if(!mem){
+        ERROR("Free: Invalid memory pointer 'NULL'");
+        exit(EXIT_FAILURE);
+    }
+
+    free(mem);
+}
+
+size_t hash_string(string value, size_t length){
+    assert(value);
+
+    size_t hash = 0;
+    while(*value){
+        hash+=*value;
+        ++value;
+    }
+    return hash%length;
+}

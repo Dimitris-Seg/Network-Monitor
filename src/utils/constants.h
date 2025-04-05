@@ -20,4 +20,7 @@
 // Resizable string 
 #define RS_STRING_DEFAULT_SIZE 64
 #define RS_STRING_GROWTH_RATE 64
+
+// Host hashtable
+#define DEFAULT_HOST_HASHTABLE_LEN 64
  

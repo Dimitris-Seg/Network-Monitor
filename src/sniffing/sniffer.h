@@ -18,12 +18,13 @@
 #define CAPTURE_H
 
 #include "../utils/general_types.h"
+#include "../storage/host_hashtable.h"
 //
 #include <pcap/pcap.h>
 //
 
 extern char errbuf[PCAP_ERRBUF_SIZE];
 
-void parse_network_traffic(string filename);
+host_hashtable_t parse_network_traffic(string filename);
 
 #endif
