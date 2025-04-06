@@ -39,10 +39,14 @@ Linked_list_t new_Linked_list(){
 }
 
 void delete_Linked_list(Linked_list_t obj){
+    assert(obj);
+
     Linked_list_node_t p = obj->head;
     while(p){
-        delete_Linked_list_node(p);
+        
+        Linked_list_node_t prev = p;
         p = p->next;
+        delete_Linked_list_node(prev);
     }
     safe_free(obj);
 }

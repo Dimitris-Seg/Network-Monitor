@@ -25,6 +25,6 @@
 
 extern char errbuf[PCAP_ERRBUF_SIZE];
 
-host_hashtable_t parse_network_traffic(string filename);
+host_hashtable_t parse_network_traffic(string filename, string filter_ip);
 
 #endif

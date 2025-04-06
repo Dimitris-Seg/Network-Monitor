@@ -73,44 +73,8 @@ tl_data_t decapsulate_udp(const u_char* bytes){
     tl_data_t tl_data;
 
     struct udphdr* udp_header = (struct udphdr*)bytes;
-    tl_data.source_port = udp_header->source;
-    tl_data.dest_port = udp_header->dest;
+    tl_data.source_port = ntohs(udp_header->source);
+    tl_data.dest_port = ntohs(udp_header->dest);
 
     return tl_data;
 }
-
-// void decapsulate_packet(const u_char* bytes){
-//     // First, ethernet header comes off
-//     struct ethhdr* eth_header = (struct ethhdr*)bytes;
-
-//     // Check internet layer protocol, we only care about IPv4 here
-//     if(ntohs(eth_header->h_proto) == ETH_P_IP) {
-//         // The decapsulated contents (ip-layer encapsulation) is after the ethernet header
-//         struct iphdr* ip_header = (struct iphdr*)(bytes+sizeof(struct ethhdr));
-
-//         // Retrieve the source and destination ip addresses
-//         struct in_addr src_ip;
-//         src_ip.s_addr = ip_header->saddr;
-//         INFO("Sender: %s", inet_ntoa(src_ip));
-//         //
-//         struct in_addr dest_ip;
-//         src_ip.s_addr = ip_header->daddr;
-//         INFO("Destination: %s", inet_ntoa(dest_ip));
-
-//         switch(ip_header->protocol){
-//         case IPPROTO_TCP: {// TCP transport-layer protocol
-//                 struct tcphdr* tcp_header = (struct tcphdr*)(ip_header + ip_header->ihl * 4);
-//                 INFO("TCP Source port: %u", tcp_header->source);
-//                 INFO("TCP Dest port: %u", tcp_header->dest);
-//             }
-//             break;
-//         case IPPROTO_UDP: {// UDP transport-layer protocol
-//                 struct udphdr* udp_header = (struct udphdr*)(ip_header + ip_header->ihl * 4);
-//                 INFO("UDP Source port: %u", udp_header->source);
-//                 INFO("UDP Dest port: %u", udp_header->dest);
-//             }
-//             break;
-//         }
-//     }
-// }
-

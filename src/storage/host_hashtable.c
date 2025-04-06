@@ -76,7 +76,6 @@ host_data_t* host_hashtable_find(host_hashtable_t hashtable, string key){
     host_hashtable_entry_t prev = NULL;
 
     while(bucket_p && strcmp(bucket_p->key, key)){
-        // if(strlen(bucket_p->key)>1)("KEY: %s\n", bucket_p->key);
         prev = bucket_p;
         bucket_p = bucket_p->next; // Search
     }

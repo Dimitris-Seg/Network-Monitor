@@ -49,7 +49,7 @@ void print_host_entry(host_hashtable_entry_t e, void* extras){
     bool tcp_used = e->value.protocols[0];
     bool udp_used = e->value.protocols[1];
 
-    PRINTLN("Protocols: %s%s%s", tcp_used?"TCP":"", (tcp_used&&udp_used)?", ":"", udp_used?"UDP":"");
+    PRINTLN("Protocol%s: %s%s%s", (tcp_used&&udp_used)?"s":"", tcp_used?"TCP":"", (tcp_used&&udp_used)?", ":"", udp_used?"UDP":"");
 }
 
 void print_help(string name){
@@ -68,11 +68,12 @@ int main(int argc, string* argv){
     PRINT_WATERMARK();
 
     string pcap_filename = argv[1];
-    string filter_ip_addr = argv[2];
+    string filter_ip_addr =argv[2];
 
     INFO("Application started with argument '%s'", pcap_filename);
     INFO("MD5 hash:    %s", md5_hash_file(pcap_filename));
     INFO("SHA256 hash: %s", sha256_hash_file(pcap_filename));
-    host_hashtable_t hosts = parse_network_traffic(pcap_filename);
+    host_hashtable_t hosts = parse_network_traffic(pcap_filename, filter_ip_addr);
     host_hashtable_map(hosts, print_host_entry, NULL);
+    delete_host_hashtable(hosts);
 }

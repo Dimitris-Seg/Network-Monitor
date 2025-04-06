@@ -16,11 +16,13 @@
 
 #include "sniffer.h"
 #include "../decapsulation/decap.h"
+#include "../utils/general_utils.h"
 #include "../utils/logging.h"
 //
 #include <netinet/if_ether.h>
 #include <netinet/tcp.h>
 #include <netinet/udp.h>
+#include <string.h>
 #include <assert.h>
 //
 
@@ -28,15 +30,28 @@
 char errbuf[PCAP_ERRBUF_SIZE];
 //
 
+struct user_data {
+    host_hashtable_t hosts;
+    string filter_ip;
+};
+
 void sniffer_callback(u_char* user, const struct pcap_pkthdr* header, const u_char* bytes){
     // Analyze and decapsulate...
 
-    host_hashtable_t hosts = (host_hashtable_t)user;
+    struct user_data* data = (struct user_data*)user;
+    host_hashtable_t hosts = data->hosts;
+    string filter_ip = data->filter_ip;
 
     ether_data_t ether_data = decapsulate_ether(bytes);
     if(ether_data.protocol==ETH_P_IP){ // We only care about IPv4 packets
-        il_data_t il_data = decapsulate_ipv4(ether_data.data_start); // TODO: REMEMBER TO FREE UNNEEDED STRING MEMORY
+        il_data_t il_data = decapsulate_ipv4(ether_data.data_start);
         tl_data_t tl_data;
+
+        if(strcmp(il_data.source_ip, filter_ip)!=0){ // Only keep packets from the filtered ip
+            safe_free(il_data.source_ip);
+            safe_free(il_data.dest_ip);
+            return;
+        }
 
         if(il_data.protocol==IPPROTO_TCP){
             tl_data = decapsulate_tcp(il_data.data_start);
@@ -71,17 +86,23 @@ void sniffer_callback(u_char* user, const struct pcap_pkthdr* header, const u_ch
         ++host_data->n_outgoing;
         host_data->total_bytes+=header->len;
         host_data->protocols[(il_data.protocol==IPPROTO_UDP)] = TRUE;
+
+        safe_free(il_data.source_ip); // Only source ip is not needed anymore
     }
 }
 
-host_hashtable_t parse_network_traffic(string filename){
+host_hashtable_t parse_network_traffic(string filename, string filter_ip){
     assert(filename);
 
     pcap_t* handle = pcap_open_offline(filename, errbuf);
     host_hashtable_t hosts = new_host_hashtable();
 
     if(handle){
-        pcap_loop(handle, -1, sniffer_callback, (u_char*)hosts);
+        struct user_data data = {.hosts=hosts, .filter_ip=filter_ip};
+
+        INFO("Filtering traffic of %s", filter_ip);
+
+        pcap_loop(handle, -1, sniffer_callback, (u_char*)&data);
         pcap_close(handle);
     }else{
         ERROR("Failed to open file %s for reading: %s", filename, errbuf);
