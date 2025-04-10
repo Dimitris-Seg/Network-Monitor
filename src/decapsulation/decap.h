@@ -17,6 +17,8 @@
 #ifndef DECAP_H
 #define DECAP_H
 
+#include "../utils/general_types.h"
+//
 #include <pcap/pcap.h>
 //
 

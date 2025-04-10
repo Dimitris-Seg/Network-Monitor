@@ -19,6 +19,7 @@
 #include "../utils/general_utils.h"
 #include "../utils/logging.h"
 //
+#include <sys/types.h>
 #include <netinet/if_ether.h>
 #include <netinet/tcp.h>
 #include <netinet/udp.h>

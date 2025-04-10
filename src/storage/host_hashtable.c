@@ -73,10 +73,8 @@ host_data_t* host_hashtable_find(host_hashtable_t hashtable, string key){
 
     size_t hash = hash_string(key, DEFAULT_HOST_HASHTABLE_LEN);
     host_hashtable_entry_t bucket_p = hashtable->table[hash];
-    host_hashtable_entry_t prev = NULL;
 
     while(bucket_p && strcmp(bucket_p->key, key)){
-        prev = bucket_p;
         bucket_p = bucket_p->next; // Search
     }
     

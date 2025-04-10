@@ -22,6 +22,7 @@
 //
 
 void print_host_entry(host_hashtable_entry_t e, void* extras){
+    (void)extras; // Ignore unused warning
     PRINTLN();
     PRINTLN("IP: %s", e->value.host_ip);
     PRINTLN("%u outgoing packets [%u Bytes]", e->value.n_outgoing, e->value.total_bytes);
@@ -49,7 +50,7 @@ void print_host_entry(host_hashtable_entry_t e, void* extras){
     bool tcp_used = e->value.protocols[0];
     bool udp_used = e->value.protocols[1];
 
-    PRINTLN("Protocol%s: %s%s%s", (tcp_used&&udp_used)?"s":"", tcp_used?"TCP":"", (tcp_used&&udp_used)?", ":"", udp_used?"UDP":"");
+    PRINTLN("Protocols: %s%s%s", tcp_used?"TCP":"", (tcp_used&&udp_used)?", ":"", udp_used?"UDP":"");
 }
 
 void print_help(string name){
